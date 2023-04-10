@@ -22,7 +22,8 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
       body: Center(
         child: Column(
           children: [
-            const Text('Please verify your email address'),
+            const Text("We've already sent a verification email!"),
+            const Text("If you haven't received a verification email yet, press the button below"),
             TextButton(
                 onPressed: () async {
                   await user?.sendEmailVerification();
@@ -37,7 +38,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                         .pushNamedAndRemoveUntil(notesRoute, (route) => false);
                   }
                 },
-                child: const Text('Already verified'))
+                child: const Text('Already verified? Click me'))
           ],
         ),
       ),
