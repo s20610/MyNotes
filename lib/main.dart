@@ -1,13 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:first_flutter_app/constants/route_strings.dart';
+import 'package:first_flutter_app/services/auth/auth_service.dart';
 import 'package:first_flutter_app/views/login_view.dart';
 import 'package:first_flutter_app/views/notes_view.dart';
 import 'package:first_flutter_app/views/register_view.dart';
 import 'package:first_flutter_app/views/verify_email_view.dart';
 import 'package:flutter/material.dart';
-
-import 'firebase_options.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -32,19 +30,18 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: Firebase.initializeApp(
-              options: DefaultFirebaseOptions.currentPlatform),
+          future: AuthService.firebase().initialize(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
-                final user = FirebaseAuth.instance.currentUser;
-                if(user != null){
-                  if(user.emailVerified){
+                final user = AuthService.firebase().currentUser;
+                if (user != null) {
+                  if (user.isEmailVerified) {
                     return const NotesView();
-                  }else{
+                  } else {
                     return const VerifyEmailView();
                   }
-                }else{
+                } else {
                   return const LoginView();
                 }
                 return const Text('Done');

@@ -1,7 +1,8 @@
 import 'dart:developer' as devtools show log;
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_flutter_app/constants/route_strings.dart';
+import 'package:first_flutter_app/services/auth/auth_exceptions.dart';
+import 'package:first_flutter_app/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 
 import '../utilities/show_error_dialog.dart';
@@ -58,33 +59,26 @@ class _LoginViewState extends State<LoginView> {
                 final email = _email.text;
                 final password = _password.text;
                 try {
-                  final userCredential = await FirebaseAuth.instance
-                      .signInWithEmailAndPassword(
-                          email: email, password: password);
-                  final user = FirebaseAuth.instance.currentUser;
+                  final userCredential = await AuthService.firebase()
+                      .logIn(email: email, password: password);
+                  final user = AuthService.firebase().currentUser;
                   devtools.log(userCredential.toString());
-                  if (user?.emailVerified ?? false) {
+                  if (user?.isEmailVerified ?? false) {
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil(notesRoute, (route) => false);
                   } else {
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         verifyEmailRoute, (route) => false);
                   }
-                } on FirebaseAuthException catch (e) {
-                  devtools.log(e.code);
-                  if (e.code == 'user-not-found') {
-                    devtools.log('User not found');
-                    await showErrorDialog(
-                        context, "Account with this email doesn't exist");
-                  } else if (e.code == 'Wrong password') {
-                    devtools.log('wrong password');
-                    await showErrorDialog(context, "Wrong credentials");
-                  } else {
-                    devtools.log(e.toString());
-                    await showErrorDialog(context, 'Unknown error ${e.code}');
-                  }
+                } on UserNotFoundAuthException {
+                  await showErrorDialog(
+                      context, "Account with this email doesn't exist");
+                } on WrongPasswordAuthException {
+                  await showErrorDialog(context, "Wrong credentials");
+                } on GenericAuthException {
+                  await showErrorDialog(context, 'Authentication error');
                 } catch (e) {
-                  devtools.log('bombasso');
+                  devtools.log(e.toString());
                   await showErrorDialog(context, 'App error ${e.toString()}');
                 }
               },
