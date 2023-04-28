@@ -32,12 +32,12 @@ void main() {
 
     test('Create user should delegate to logIn function', () async {
       final badEmailUser =
-          provider.createUser(email: 'foo@bar.com', password: 'test123');
+      provider.createUser(email: 'foo@bar.com', password: 'test123');
       expect(badEmailUser,
           throwsA(const TypeMatcher<UserNotFoundAuthException>()));
 
       final badPasswordUser =
-          provider.createUser(email: 'someone@bar.com', password: 'foopass');
+      provider.createUser(email: 'someone@bar.com', password: 'foopass');
       expect(badPasswordUser,
           throwsA(const TypeMatcher<WrongPasswordAuthException>()));
 
@@ -101,7 +101,7 @@ class MockAuthProvider implements AuthProvider {
     await Future.delayed(const Duration(seconds: 2));
     if (email == 'foo@bar.com') throw UserNotFoundAuthException();
     if (password == 'foopass') throw WrongPasswordAuthException();
-    const user = AuthUser(isEmailVerified: false);
+    const user = AuthUser(isEmailVerified: false, email: 'foo@bar.com');
     _user = user;
     return Future.value(user);
   }
@@ -119,7 +119,7 @@ class MockAuthProvider implements AuthProvider {
     if (!isInitialized) throw NotInitializedException();
     final user = _user;
     if (user == null) throw UserNotFoundAuthException();
-    const newUser = AuthUser(isEmailVerified: true);
+    const newUser = AuthUser(isEmailVerified: true, email: 'foo@bar.com');
     _user = newUser;
   }
 }

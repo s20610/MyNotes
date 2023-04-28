@@ -36,6 +36,13 @@ class _NotesViewState extends State<NotesView> {
       appBar: AppBar(
         title: const Text('Your notes'),
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(newNoteRoute);
+            },
+            icon: const Icon(Icons.add),
+            tooltip: 'Add note',
+          ),
           PopupMenuButton<MenuAction>(
             onSelected: (value) async {
               devtools.log('Clicked option: $value');
@@ -66,14 +73,16 @@ class _NotesViewState extends State<NotesView> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              return StreamBuilder(stream: _notesService.allNotes,builder: (context, snapshot){
-                switch(snapshot.connectionState){
-                  case ConnectionState.waiting:
-                    return const Text('Waiting for all notes...');
-                  default:
-                    return const CircularProgressIndicator();
-                }
-              });
+              return StreamBuilder(
+                  stream: _notesService.allNotes,
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return const Text('Waiting for all notes...');
+                      default:
+                        return const CircularProgressIndicator();
+                    }
+                  });
             default:
               return const CircularProgressIndicator();
           }
