@@ -6,6 +6,12 @@ import 'package:first_flutter_app/services/auth/auth_provider.dart';
 import 'package:first_flutter_app/services/auth/auth_user.dart';
 
 class FirebaseAuthProvider implements AuthProvider {
+  static final FirebaseAuthProvider _shared = FirebaseAuthProvider._sharedInstance();
+
+  FirebaseAuthProvider._sharedInstance();
+
+  factory FirebaseAuthProvider() => _shared;
+
   @override
   Future<AuthUser> createUser({
     required String email,
