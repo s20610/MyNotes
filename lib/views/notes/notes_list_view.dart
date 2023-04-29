@@ -1,12 +1,18 @@
 import 'package:first_flutter_app/services/crud/notes_service.dart';
 import 'package:flutter/material.dart';
 
+typedef NoteCallback = void Function(DatabaseNote note);
+
 class NotesListView extends StatelessWidget {
   final List<DatabaseNote> allNotes;
   final NotesService notesService;
+  final NoteCallback onTap;
 
   const NotesListView(
-      {Key? key, required this.allNotes, required this.notesService})
+      {Key? key,
+      required this.allNotes,
+      required this.notesService,
+      required this.onTap})
       : super(key: key);
 
   @override
@@ -37,10 +43,9 @@ class NotesListView extends StatelessWidget {
                   });
             },
             child: ListTile(
-              trailing: IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () {},
-              ),
+              onTap: () {
+                onTap(note);
+              },
               title: Text(
                 noteText,
                 maxLines: 1,
