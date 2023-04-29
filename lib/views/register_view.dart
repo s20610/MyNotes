@@ -3,7 +3,7 @@ import 'dart:developer' as devtools show log;
 import 'package:first_flutter_app/constants/route_strings.dart';
 import 'package:first_flutter_app/services/auth/auth_exceptions.dart';
 import 'package:first_flutter_app/services/auth/auth_service.dart';
-import 'package:first_flutter_app/utilities/show_error_dialog.dart';
+import 'package:first_flutter_app/utilities/dialogs/error_dialog.dart';
 import 'package:flutter/material.dart';
 
 class RegisterView extends StatefulWidget {

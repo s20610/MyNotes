@@ -4,6 +4,8 @@ import 'package:first_flutter_app/constants/route_strings.dart';
 import 'package:first_flutter_app/enums/menu_action.dart';
 import 'package:first_flutter_app/services/auth/auth_service.dart';
 import 'package:first_flutter_app/services/crud/notes_service.dart';
+import 'package:first_flutter_app/utilities/dialogs/logout_dialog.dart';
+import 'package:first_flutter_app/views/notes/notes_list_view.dart';
 import 'package:flutter/material.dart';
 
 class NotesView extends StatefulWidget {
@@ -75,41 +77,8 @@ class _NotesViewState extends State<NotesView> {
                       case ConnectionState.active:
                         if (snapshot.hasData) {
                           final allNotes = snapshot.data as List<DatabaseNote>;
-                          return ListView.builder(
-                              itemCount: allNotes.length,
-                              itemBuilder: (context, index) {
-                                final note = allNotes.elementAt(index);
-                                final noteText = note.text;
-                                return Dismissible(
-                                  key: Key(noteText),
-                                  direction: DismissDirection.endToStart,
-                                  background: Container(
-                                    alignment: Alignment.centerRight,
-                                    color: Colors.red,
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Icon(
-                                        Icons.delete_forever,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  onDismissed: (direction) async {
-                                    await _notesService.deleteNote(id: note.id);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content: Text('Note deleted')));
-                                  },
-                                  child: ListTile(
-                                    title: Text(
-                                      noteText,
-                                      maxLines: 1,
-                                      softWrap: true,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                );
-                              });
+                          return NotesListView(
+                              allNotes: allNotes, notesService: _notesService);
                         } else {
                           return const CircularProgressIndicator();
                         }
@@ -124,27 +93,4 @@ class _NotesViewState extends State<NotesView> {
       ),
     );
   }
-}
-
-Future<bool> showLogOutDialog(BuildContext context) {
-  return showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Sign out'),
-          content: const Text('Are you sure you want to sign out?'),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-                child: const Text('Cancel')),
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-                child: const Text('Sign out'))
-          ],
-        );
-      }).then((value) => value ?? false);
 }
