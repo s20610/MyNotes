@@ -1,11 +1,12 @@
-import 'package:first_flutter_app/services/crud/notes_service.dart';
+import 'package:first_flutter_app/services/cloud/cloud_note.dart';
+import 'package:first_flutter_app/services/cloud/firebase_cloud_storage.dart';
 import 'package:flutter/material.dart';
 
-typedef NoteCallback = void Function(DatabaseNote note);
+typedef NoteCallback = void Function(CloudNote note);
 
 class NotesListView extends StatelessWidget {
-  final List<DatabaseNote> allNotes;
-  final NotesService notesService;
+  final Iterable<CloudNote> allNotes;
+  final FirebaseCloudStorage notesService;
   final NoteCallback onTap;
 
   const NotesListView(
@@ -37,10 +38,12 @@ class NotesListView extends StatelessWidget {
               ),
             ),
             onDismissed: (direction) async {
-              await notesService.deleteNote(id: note.id).then((_) => {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Note deleted')))
-                  });
+              await notesService
+                  .deleteNote(documentId: note.documentId)
+                  .then((_) => {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Note deleted')))
+                      });
             },
             child: ListTile(
               onTap: () {

@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 class AuthUser {
   final bool isEmailVerified;
   final String email;
-  final String? userId;
+  final String userId;
 
   const AuthUser(
       {required this.userId,
