@@ -2,9 +2,11 @@ import 'dart:developer' as devtools show log;
 
 import 'package:first_flutter_app/constants/route_strings.dart';
 import 'package:first_flutter_app/services/auth/auth_exceptions.dart';
-import 'package:first_flutter_app/services/auth/auth_service.dart';
+import 'package:first_flutter_app/services/auth/bloc/auth_bloc.dart';
+import 'package:first_flutter_app/services/auth/bloc/auth_event.dart';
 import 'package:first_flutter_app/utilities/dialogs/error_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' show ReadContext;
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -58,17 +60,7 @@ class _LoginViewState extends State<LoginView> {
                 final email = _email.text;
                 final password = _password.text;
                 try {
-                  final userCredential = await AuthService.firebase()
-                      .logIn(email: email, password: password);
-                  final user = AuthService.firebase().currentUser;
-                  devtools.log(userCredential.toString());
-                  if (user?.isEmailVerified ?? false) {
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil(notesRoute, (route) => false);
-                  } else {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        verifyEmailRoute, (route) => false);
-                  }
+                  context.read<AuthBloc>().add(AuthEventLogIn(email, password));
                 } on UserNotFoundAuthException {
                   await showErrorDialog(
                       context, "Account with this email doesn't exist");
