@@ -3,6 +3,7 @@ import 'package:first_flutter_app/services/cloud/cloud_note.dart';
 import 'package:first_flutter_app/services/cloud/firebase_cloud_storage.dart';
 import 'package:first_flutter_app/utilities/dialogs/cannot_share_empty_note_dialog.dart';
 import 'package:first_flutter_app/utilities/generics/get_arguments.dart';
+import 'package:first_flutter_app/utilities/styles/widget_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -16,14 +17,16 @@ class CreateUpdateNoteView extends StatefulWidget {
 class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   CloudNote? _note;
   late final FirebaseCloudStorage _notesService;
-  late final TextEditingController _textController;
+  late final TextEditingController _noteTextController;
+  late final TextEditingController _titleTextController;
 
   Future<CloudNote> createOrGetExistingNote(BuildContext context) async {
     final widgetNote = context.getArgument<CloudNote>();
 
     if (widgetNote != null) {
       _note = widgetNote;
-      _textController.text = widgetNote.text;
+      _noteTextController.text = widgetNote.text;
+      _titleTextController.text = widgetNote.title;
       return widgetNote;
     }
 
@@ -40,16 +43,17 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
 
   void _deleteNoteIfTextIsEmpty() {
     final note = _note;
-    if (_textController.text.isEmpty && note != null) {
+    if (_noteTextController.text.isEmpty && note != null) {
       _notesService.deleteNote(documentId: note.documentId);
     }
   }
 
   void _saveNoteIfTextNotEmpty() async {
     final note = _note;
-    final text = _textController.text;
+    final title = _titleTextController.text;
+    final text = _noteTextController.text;
     if (text.isNotEmpty && note != null) {
-      await _notesService.updateNote(documentId: note.documentId, text: text);
+      await _notesService.updateNote(documentId: note.documentId, text: text, title: title);
     }
   }
 
@@ -58,19 +62,23 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     if (note == null) {
       return;
     }
-    final text = _textController.text;
-    await _notesService.updateNote(documentId: note.documentId, text: text);
+    final title = _titleTextController.text;
+    final text = _noteTextController.text;
+    await _notesService.updateNote(documentId: note.documentId, text: text, title: title);
   }
 
   void _setupTextControllerListener() {
-    _textController.removeListener(_textControllerListener);
-    _textController.addListener(_textControllerListener);
+    _noteTextController.removeListener(_textControllerListener);
+    _noteTextController.addListener(_textControllerListener);
+    _titleTextController.removeListener(_textControllerListener);
+    _titleTextController.addListener(_textControllerListener);
   }
 
   @override
   void initState() {
     _notesService = FirebaseCloudStorage();
-    _textController = TextEditingController();
+    _noteTextController = TextEditingController();
+    _titleTextController = TextEditingController();
     super.initState();
   }
 
@@ -78,7 +86,8 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   void dispose() {
     _deleteNoteIfTextIsEmpty();
     _saveNoteIfTextNotEmpty();
-    _textController.dispose();
+    _noteTextController.dispose();
+    _titleTextController.dispose();
     super.dispose();
   }
 
@@ -89,7 +98,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
           title: const Text('Note'),
           actions: [
             IconButton(onPressed: () async{
-              final text = _textController.text;
+              final text = _noteTextController.text;
               if(_note == null || text.isEmpty){
                 await showCannotShareEmptyNoteDialog(context);
               }else{
@@ -104,12 +113,32 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
                 _setupTextControllerListener();
-                return TextField(
-                  controller: _textController,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  decoration: const InputDecoration(
-                      hintText: 'Start typing your note...'),
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Title', style: textStyleBig,),
+                      const SizedBox(height: 5,),
+                      TextField(
+                        controller: _titleTextController,
+                        keyboardType: TextInputType.text,
+                        maxLines: 1,
+                        decoration: const InputDecoration(border: OutlineInputBorder(),
+                            hintText: 'Your note title'),
+                      ),
+                      const SizedBox(height: 10,),
+                      const Text('Note content', style: textStyleBig,),
+                      const SizedBox(height: 5,),
+                      TextField(
+                        controller: _noteTextController,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        decoration: const InputDecoration(border: OutlineInputBorder(),
+                            hintText: 'Start typing your note...'),
+                      ),
+                    ],
+                  ),
                 );
               default:
                 return const CircularProgressIndicator();

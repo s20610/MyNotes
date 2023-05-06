@@ -36,13 +36,6 @@ class _NotesViewState extends State<NotesView> {
         appBar: AppBar(
           title: const Text('Your notes'),
           actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(createUpdateNoteView);
-              },
-              icon: const Icon(Icons.add),
-              tooltip: 'Add note',
-            ),
             PopupMenuButton<MenuAction>(
               onSelected: (value) async {
                 devtools.log('Clicked option: $value');
@@ -64,6 +57,13 @@ class _NotesViewState extends State<NotesView> {
               },
             )
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).pushNamed(createUpdateNoteView);
+          },
+          backgroundColor: Colors.green,
+          child: const Icon(Icons.add),
         ),
         body: StreamBuilder(
             stream: _notesService.allNotes(ownerUserId: ownerUserId),

@@ -1,6 +1,7 @@
 import 'package:first_flutter_app/services/auth/auth_exceptions.dart';
 import 'package:first_flutter_app/services/auth/bloc/auth_event.dart';
 import 'package:first_flutter_app/utilities/dialogs/error_dialog.dart';
+import 'package:first_flutter_app/utilities/styles/widget_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -53,39 +54,52 @@ class _RegisterViewState extends State<RegisterView> {
           appBar: AppBar(
             title: const Text('Register'),
           ),
-          body: Column(
-            children: [
-              TextField(
-                controller: _email,
-                keyboardType: TextInputType.emailAddress,
-                decoration:
-                    const InputDecoration(hintText: 'Enter your email here'),
-              ),
-              TextField(
-                controller: _password,
-                obscureText: true,
-                enableSuggestions: false,
-                autocorrect: false,
-                decoration:
-                    const InputDecoration(hintText: 'Enter your password here'),
-              ),
-              TextButton(
-                onPressed: () async {
-                  final email = _email.text;
-                  final password = _password.text;
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 40,),
+                const Text('Please input your email and chosen password to create an account', style: textStyleBig,),
+                const SizedBox(height: 10,),
+                TextField(
+                  controller: _email,
+                  keyboardType: TextInputType.emailAddress,
+                  autofocus: true,
+                  decoration:
+                      const InputDecoration(icon: Icon(Icons.email_outlined),
+                          border: OutlineInputBorder(),
+                          hintText: 'Enter your email here'),
+                ),
+                const SizedBox(height: 10,),
+                TextField(
+                  controller: _password,
+                  obscureText: true,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  decoration: const InputDecoration(icon: Icon(Icons.password_outlined),
+                    border: OutlineInputBorder(),
+                      hintText: 'Enter your password here'),
+                ),
+                const SizedBox(height: 15,),
+                ElevatedButton(
+                  style: buttonStyle,
+                  onPressed: () async {
+                    final email = _email.text;
+                    final password = _password.text;
 
-                  context
-                      .read<AuthBloc>()
-                      .add(AuthEventRegister(email, password));
-                },
-                child: const Text('Register'),
-              ),
-              TextButton(
-                  onPressed: () {
-                    context.read<AuthBloc>().add(const AuthEventLogOut());
+                    context
+                        .read<AuthBloc>()
+                        .add(AuthEventRegister(email, password));
                   },
-                  child: const Text('Already have an account? Log in!'))
-            ],
+                  child: const Text('Register'),
+                ),
+                TextButton(
+                    onPressed: () {
+                      context.read<AuthBloc>().add(const AuthEventLogOut());
+                    },
+                    child: const Text('Already have an account? Log in!'))
+              ],
+            ),
           )),
     );
   }

@@ -6,7 +6,8 @@ import 'package:first_flutter_app/services/auth/auth_provider.dart';
 import 'package:first_flutter_app/services/auth/auth_user.dart';
 
 class FirebaseAuthProvider implements AuthProvider {
-  static final FirebaseAuthProvider _shared = FirebaseAuthProvider._sharedInstance();
+  static final FirebaseAuthProvider _shared =
+      FirebaseAuthProvider._sharedInstance();
 
   FirebaseAuthProvider._sharedInstance();
 
@@ -100,5 +101,23 @@ class FirebaseAuthProvider implements AuthProvider {
   Future<void> initialize() async {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
+  }
+
+  @override
+  Future<void> sendPasswordReset({required String email}) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'firebase_auth/invalid-email':
+          throw InvalidEmailAuthException();
+        case 'firebase_auth/user-not-found':
+          throw UserNotFoundAuthException();
+        default:
+          throw GenericAuthException();
+      }
+    } catch (_) {
+      throw GenericAuthException();
+    }
   }
 }
