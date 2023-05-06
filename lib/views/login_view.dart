@@ -54,91 +54,93 @@ class _LoginViewState extends State<LoginView> {
           appBar: AppBar(
             title: const Text('Log in'),
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 40,
-                ),
-                const Text(
-                  'Please log in to your account in order to interact with and create notes!',
-                  style: textStyleBig,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                TextField(
-                  controller: _email,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                      icon: Icon(Icons.email_outlined),
-                      hintText: 'Enter your email here',
-                      border: OutlineInputBorder()),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                TextField(
-                  controller: _password,
-                  obscureText: passwordVisible,
-                  enableSuggestions: false,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                      icon: const Icon(Icons.password_outlined),
-                      hintText: 'Enter your password here',
-                      border: const OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        icon: Icon(passwordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off),
-                        onPressed: () {
-                          setState(
-                            () {
-                              passwordVisible = !passwordVisible;
-                            },
-                          );
-                        },
-                      )),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      style: buttonStyle,
-                      onPressed: () async {
-                        final email = _email.text;
-                        final password = _password.text;
-                        context
-                            .read<AuthBloc>()
-                            .add(AuthEventLogIn(email, password));
-                      },
-                      child: const Text('Login'),
-                    ),
-                    const SizedBox(
-                      width: 20.0,
-                    ),
-                    ElevatedButton(
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  const Text(
+                    'Please log in to your account in order to interact with and create notes!',
+                    style: textStyleBig,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextField(
+                    controller: _email,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(
+                        icon: Icon(Icons.email_outlined),
+                        hintText: 'Enter your email here',
+                        border: OutlineInputBorder()),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextField(
+                    controller: _password,
+                    obscureText: passwordVisible,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                        icon: const Icon(Icons.password_outlined),
+                        hintText: 'Enter your password here',
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: Icon(passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off),
+                          onPressed: () {
+                            setState(
+                              () {
+                                passwordVisible = !passwordVisible;
+                              },
+                            );
+                          },
+                        )),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
                         style: buttonStyle,
-                        onPressed: () {
+                        onPressed: () async {
+                          final email = _email.text;
+                          final password = _password.text;
                           context
                               .read<AuthBloc>()
-                              .add(const AuthEventForgotPassword());
+                              .add(AuthEventLogIn(email, password));
                         },
-                        child: const Text('I forgot my password')),
-                  ],
-                ),
-                TextButton(
-                    onPressed: () {
-                      context
-                          .read<AuthBloc>()
-                          .add(const AuthEventShouldRegister());
-                    },
-                    child: const Text('Not registered yet? Register here!')),
-              ],
+                        child: const Text('Login'),
+                      ),
+                      const SizedBox(
+                        width: 20.0,
+                      ),
+                      ElevatedButton(
+                          style: buttonStyle,
+                          onPressed: () {
+                            context
+                                .read<AuthBloc>()
+                                .add(const AuthEventForgotPassword());
+                          },
+                          child: const Text('I forgot my password')),
+                    ],
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        context
+                            .read<AuthBloc>()
+                            .add(const AuthEventShouldRegister());
+                      },
+                      child: const Text('Not registered yet? Register here!')),
+                ],
+              ),
             ),
           )),
     );

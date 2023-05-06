@@ -12,9 +12,13 @@ import 'package:first_flutter_app/views/register_view.dart';
 import 'package:first_flutter_app/views/verify_email_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     title: 'Flutter Demo',
     theme: ThemeData(primarySwatch: Colors.green, useMaterial3: false),
     darkTheme: ThemeData.dark(
@@ -35,6 +39,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<AuthBloc>().add(const AuthEventInitialize());
+    FlutterNativeSplash.remove();
     return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
       if (state.isLoading) {
         LoadingScreen().show(
