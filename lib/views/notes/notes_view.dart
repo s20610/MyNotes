@@ -56,20 +56,21 @@ class _NotesViewState extends State<NotesView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: TextField(
-            controller: _searchController,
-            style: const TextStyle(color: Colors.white),
-            cursorColor: Colors.white,
-            decoration: const InputDecoration(
-              hintText: 'Search...',
-              hintStyle: TextStyle(color: Colors.white),
-              border: InputBorder.none,
-            ),
-          ),
-          leading: const Icon(
-            Icons.search,
-            color: Colors.white,
-          ),
+          title: const Text('My Notes'),
+          // title: TextField(
+          //   controller: _searchController,
+          //   style: const TextStyle(color: Colors.white),
+          //   cursorColor: Colors.white,
+          //   decoration: const InputDecoration(
+          //     hintText: 'Search...',
+          //     hintStyle: TextStyle(color: Colors.white),
+          //     border: InputBorder.none,
+          //   ),
+          // ),
+          // leading: const Icon(
+          //   Icons.search,
+          //   color: Colors.white,
+          // ),
           actions: [
             PopupMenuButton<MenuAction>(
               onSelected: (value) async {
@@ -86,10 +87,10 @@ class _NotesViewState extends State<NotesView> {
               },
               itemBuilder: (context) {
                 return [
-                  PopupMenuItem<MenuAction>(
+                  const PopupMenuItem<MenuAction>(
                       value: MenuAction.logout,
                       child: Row(
-                        children: const [
+                        children: [
                           Text('Log out'),
                           SizedBox(width: 5),
                           Icon(
@@ -118,11 +119,11 @@ class _NotesViewState extends State<NotesView> {
                 case ConnectionState.active:
                   if (snapshot.hasData) {
                     _notes = snapshot.data as Iterable<CloudNote>;
-                    if (_filteredNotes.isEmpty) {
-                      _filteredNotes = _notes;
-                    }
+                    // if (_filteredNotes.isEmpty) {
+                    //   _filteredNotes = _notes;
+                    // }
                     return NotesListView(
-                      allNotes: _filteredNotes,
+                      allNotes: _notes,
                       notesService: _notesService,
                       onTap: (note) {
                         Navigator.of(context)

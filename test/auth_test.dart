@@ -136,4 +136,13 @@ class MockAuthProvider implements AuthProvider {
       throw InvalidEmailAuthException();
     }
   }
+
+  @override
+  Future<AuthUser> signInWithGoogle() async {
+    if (!isInitialized) throw NotInitializedException();
+    await Future.delayed(const Duration(seconds: 5));
+    const user = AuthUser(isEmailVerified: false, email: 'foo@bar.com', userId: '3219425925');
+    _user = user;
+    return Future.value(user);
+  }
 }

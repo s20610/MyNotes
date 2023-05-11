@@ -6,6 +6,7 @@ import 'package:first_flutter_app/utilities/responsive/responsive_layout.dart';
 import 'package:first_flutter_app/utilities/styles/widget_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocListener, ReadContext;
+import 'package:sign_button/sign_button.dart';
 
 import '../../services/auth/bloc/auth_state.dart';
 
@@ -36,11 +37,11 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
-  Widget mobileView(){
+  Widget mobileView() {
     return Column(
       children: [
-         SizedBox(
-          height: MediaQuery.of(context).size.width/5,
+        SizedBox(
+          height: MediaQuery.of(context).size.width / 5,
         ),
         const Text(
           'Please log in to your account in order to interact with and create notes!',
@@ -70,12 +71,11 @@ class _LoginViewState extends State<LoginView> {
               hintText: 'Enter your password here',
               border: const OutlineInputBorder(),
               suffixIcon: IconButton(
-                icon: Icon(passwordVisible
-                    ? Icons.visibility
-                    : Icons.visibility_off),
+                icon: Icon(
+                    passwordVisible ? Icons.visibility : Icons.visibility_off),
                 onPressed: () {
                   setState(
-                        () {
+                    () {
                       passwordVisible = !passwordVisible;
                     },
                   );
@@ -93,9 +93,7 @@ class _LoginViewState extends State<LoginView> {
               onPressed: () async {
                 final email = _email.text;
                 final password = _password.text;
-                context
-                    .read<AuthBloc>()
-                    .add(AuthEventLogIn(email, password));
+                context.read<AuthBloc>().add(AuthEventLogIn(email, password));
               },
               child: const Text('Login'),
             ),
@@ -105,28 +103,39 @@ class _LoginViewState extends State<LoginView> {
             ElevatedButton(
                 style: buttonStyle,
                 onPressed: () {
-                  context
-                      .read<AuthBloc>()
-                      .add(const AuthEventForgotPassword());
+                  context.read<AuthBloc>().add(const AuthEventForgotPassword());
                 },
                 child: const Text('I forgot my password')),
           ],
         ),
+        const SizedBox(
+          height: 10,
+        ),
+        SignInButton(
+          buttonType: ButtonType.google,
+          buttonSize: ButtonSize.large,
+          btnTextColor: Colors.white,
+          btnColor: const Color(0x0066b665),
+          onPressed: () {
+            context.read<AuthBloc>().add(const AuthEventGoogleSignIn());
+          },
+        ),
+        const SizedBox(
+          height: 10,
+        ),
         TextButton(
             onPressed: () {
-              context
-                  .read<AuthBloc>()
-                  .add(const AuthEventShouldRegister());
+              context.read<AuthBloc>().add(const AuthEventShouldRegister());
             },
             child: const Text('Not registered yet? Register here!')),
       ],
     );
   }
 
-  Widget desktopView(){
+  Widget desktopView() {
     return Center(
       child: SizedBox(
-        width: MediaQuery.of(context).size.width/1.75,
+        width: MediaQuery.of(context).size.width / 1.75,
         child: Column(
           children: [
             const SizedBox(
@@ -166,7 +175,7 @@ class _LoginViewState extends State<LoginView> {
                         : Icons.visibility_off),
                     onPressed: () {
                       setState(
-                            () {
+                        () {
                           passwordVisible = !passwordVisible;
                         },
                       );
@@ -203,14 +212,25 @@ class _LoginViewState extends State<LoginView> {
                     child: const Text('I forgot my password')),
               ],
             ),
+            const SizedBox(
+              height: 10,
+            ),
+            SignInButton(
+              buttonType: ButtonType.google,
+              buttonSize: ButtonSize.large,
+              btnTextColor: Colors.white,
+              btnColor: const Color(0x0066b665),
+              onPressed: () {
+                context.read<AuthBloc>().add(const AuthEventGoogleSignIn());
+              },
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             TextButton(
-              style: TextButton.styleFrom(
-                textStyle: textStyleBig
-              ),
+                style: TextButton.styleFrom(textStyle: textStyleBig),
                 onPressed: () {
-                  context
-                      .read<AuthBloc>()
-                      .add(const AuthEventShouldRegister());
+                  context.read<AuthBloc>().add(const AuthEventShouldRegister());
                 },
                 child: const Text('Not registered yet? Click me!')),
           ],
@@ -240,8 +260,11 @@ class _LoginViewState extends State<LoginView> {
           ),
           body: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ResponsiveLayout(mobileWidget: mobileView(), tabletWidget: desktopView(),),
+              padding: const EdgeInsets.all(20.0),
+              child: ResponsiveLayout(
+                mobileWidget: mobileView(),
+                tabletWidget: desktopView(),
+              ),
             ),
           )),
     );

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:first_flutter_app/constants/route_strings.dart';
 import 'package:first_flutter_app/helpers/loading/loading_screen.dart';
 import 'package:first_flutter_app/services/auth/auth_service.dart';
@@ -11,19 +13,28 @@ import 'package:first_flutter_app/views/auth/verify_email_view.dart';
 import 'package:first_flutter_app/views/notes/create_update_note_view.dart';
 import 'package:first_flutter_app/views/notes/notes_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:json_theme/json_theme.dart';
 
-void main() {
+void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  final lightStr = await rootBundle.loadString('assets/theme/theme_light.json');
+  final lightJson = jsonDecode(lightStr);
+  final lightTheme = ThemeDecoder.decodeThemeData(lightJson)!;
+
+  final darkStr = await rootBundle.loadString('assets/theme/theme_dark.json');
+  final darkJson = jsonDecode(darkStr);
+  final darkTheme = ThemeDecoder.decodeThemeData(darkJson)!;
+
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'Flutter Demo',
-    theme: ThemeData(primarySwatch: Colors.green, useMaterial3: false),
-    darkTheme: ThemeData.dark(
-      useMaterial3: false,
-    ),
+    theme: lightTheme,
+    darkTheme: darkTheme,
     home: BlocProvider<AuthBloc>(
         create: (context) => AuthBloc(AuthService.firebase()),
         child: const HomePage()),

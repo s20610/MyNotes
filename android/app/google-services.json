@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "7117495738-5il0q7h26i966sjl1vopsd07o9pospts.apps.googleusercontent.com",
+          "client_id": "7117495738-a5vsct99fcsp6jcke4nkk9c5hk5se2lq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.borysante.first_flutter_app",
+            "certificate_hash": "503f06e07141038f16ab0a459640c92d26ffabed"
+          }
+        },
+        {
+          "client_id": "7117495738-2gbquu5t19gkn744qv4gs07cbb5em1jk.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +35,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "7117495738-5il0q7h26i966sjl1vopsd07o9pospts.apps.googleusercontent.com",
+              "client_id": "7117495738-2gbquu5t19gkn744qv4gs07cbb5em1jk.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

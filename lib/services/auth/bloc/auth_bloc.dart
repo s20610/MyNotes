@@ -58,6 +58,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
+    on<AuthEventGoogleSignIn>((event, emit) async {
+      emit(const AuthStateLoggedOut(
+          exception: null, isLoading: true, loadingText: 'Logging in'));
+      try {
+        final user =
+        await provider.signInWithGoogle();
+        if (!user.isEmailVerified) {
+          emit(const AuthStateLoggedOut(exception: null, isLoading: false));
+          emit(const AuthStateNeedsVerification(isLoading: false));
+        } else {
+          emit(const AuthStateLoggedOut(exception: null, isLoading: false));
+          emit(AuthStateLoggedIn(isLoading: false, user: user));
+        }
+      } on Exception catch (e) {
+        emit(AuthStateLoggedOut(exception: e, isLoading: false));
+      }
+    });
+
     on<AuthEventLogOut>((event, emit) async {
       try {
         await provider.logOut();
