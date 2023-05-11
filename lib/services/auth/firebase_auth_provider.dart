@@ -44,6 +44,7 @@ class FirebaseAuthProvider implements AuthProvider {
 
   @override
   AuthUser? get currentUser {
+    FirebaseAuth.instance.currentUser?.reload();
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       return AuthUser.fromFirebase(user);

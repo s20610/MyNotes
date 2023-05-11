@@ -60,7 +60,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                 TextField(
                   keyboardType: TextInputType.emailAddress,
                   autocorrect: false,
-                  autofocus: true,
+                  autofocus: false,
                   controller: _controller,
                   decoration:
                       const InputDecoration(icon: Icon(Icons.email_outlined), border: OutlineInputBorder(),
@@ -75,7 +75,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                         .read<AuthBloc>()
                         .add(AuthEventForgotPassword(email: email));
                   },
-                  child: const Text('Send me password reset link'),
+                  child: const Text('Send me a password reset link'),
                 ),
                 TextButton(
                   onPressed: () {

@@ -4,7 +4,7 @@ import 'package:first_flutter_app/utilities/styles/widget_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../services/auth/bloc/auth_bloc.dart';
+import '../../services/auth/bloc/auth_bloc.dart';
 
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({Key? key}) : super(key: key);
@@ -16,7 +16,6 @@ class VerifyEmailView extends StatefulWidget {
 class _VerifyEmailViewState extends State<VerifyEmailView> {
   @override
   Widget build(BuildContext context) {
-    final user = AuthService.firebase().currentUser;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Verify email'),
@@ -26,8 +25,8 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              const SizedBox(
-                height: 40,
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 4,
               ),
               const Text("We've already sent a verification email!"),
               const SizedBox(
@@ -46,6 +45,11 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                         .add(const AuthEventSendEmailVerification());
                   },
                   child: const Text('Send email verification')),
+              IconButton(
+                  onPressed: () {
+                    AuthService.firebase().currentUser;
+                  },
+                  icon: const Icon(Icons.refresh))
             ],
           ),
         ),
