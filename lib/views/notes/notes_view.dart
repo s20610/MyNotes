@@ -21,20 +21,55 @@ class NotesView extends StatefulWidget {
 
 class _NotesViewState extends State<NotesView> {
   late final FirebaseCloudStorage _notesService;
+  late final TextEditingController _searchController;
 
   String get ownerUserId => AuthService.firebase().currentUser!.userId;
+
+  Iterable<CloudNote> _notes = [];
+  Iterable<CloudNote> _filteredNotes = [];
+
+  Future<void> _performSearch() async {
+    setState(() {
+      _filteredNotes = _notes
+          .where((note) => note.title
+              .toLowerCase()
+              .contains(_searchController.text.toLowerCase()))
+          .toList();
+    });
+  }
 
   @override
   void initState() {
     _notesService = FirebaseCloudStorage();
+    _searchController = TextEditingController();
+    _searchController.addListener(_performSearch);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Your notes'),
+          title: TextField(
+            controller: _searchController,
+            style: const TextStyle(color: Colors.white),
+            cursorColor: Colors.white,
+            decoration: const InputDecoration(
+              hintText: 'Search...',
+              hintStyle: TextStyle(color: Colors.white),
+              border: InputBorder.none,
+            ),
+          ),
+          leading: const Icon(
+            Icons.search,
+            color: Colors.white,
+          ),
           actions: [
             PopupMenuButton<MenuAction>(
               onSelected: (value) async {
@@ -50,9 +85,19 @@ class _NotesViewState extends State<NotesView> {
                 }
               },
               itemBuilder: (context) {
-                return const [
+                return [
                   PopupMenuItem<MenuAction>(
-                      value: MenuAction.logout, child: Text('Log out')),
+                      value: MenuAction.logout,
+                      child: Row(
+                        children: const [
+                          Text('Log out'),
+                          SizedBox(width: 5),
+                          Icon(
+                            Icons.logout,
+                            color: Colors.black,
+                          ),
+                        ],
+                      )),
                 ];
               },
             )
@@ -72,9 +117,12 @@ class _NotesViewState extends State<NotesView> {
                 case ConnectionState.waiting:
                 case ConnectionState.active:
                   if (snapshot.hasData) {
-                    final allNotes = snapshot.data as Iterable<CloudNote>;
+                    _notes = snapshot.data as Iterable<CloudNote>;
+                    if (_filteredNotes.isEmpty) {
+                      _filteredNotes = _notes;
+                    }
                     return NotesListView(
-                      allNotes: allNotes,
+                      allNotes: _filteredNotes,
                       notesService: _notesService,
                       onTap: (note) {
                         Navigator.of(context)
@@ -82,10 +130,10 @@ class _NotesViewState extends State<NotesView> {
                       },
                     );
                   } else {
-                    return const CircularProgressIndicator();
+                    return const Center(child: CircularProgressIndicator());
                   }
                 default:
-                  return const CircularProgressIndicator();
+                  return const Center(child: CircularProgressIndicator());
               }
             }));
   }
