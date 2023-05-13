@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "7117495738-ask0td3v86pmr011rnfddk18kndbkml7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.borysante.first_flutter_app",
+            "certificate_hash": "d022ce0ab273b3fd3368bb455570681ac403e373"
+          }
+        },
+        {
           "client_id": "7117495738-2gbquu5t19gkn744qv4gs07cbb5em1jk.apps.googleusercontent.com",
           "client_type": 3
         }
